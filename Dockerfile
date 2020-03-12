@@ -1,9 +1,12 @@
 ARG HAPROXY_VERSION
 
-FROM debian:latest AS builder
+FROM golang:1.13.8 AS builder
 ARG HAPROXY_DATA_PLANE_API_VERSION
-ADD https://github.com/haproxytech/dataplaneapi/releases/download/v${HAPROXY_DATA_PLANE_API_VERSION}/dataplaneapi /dataplaneapi
-RUN chmod a+x /dataplaneapi
+RUN git clone https://github.com/haproxytech/dataplaneapi.git $GOPATH/src/github.com/haproxytech/dataplaneapi
+WORKDIR $GOPATH/src/github.com/haproxytech/dataplaneapi
+RUN git checkout ${HAPROXY_DATA_PLANE_API_VERSION}
+RUN make build
+RUN cp build/dataplaneapi /dataplaneapi
 
 FROM haproxytech/haproxy-alpine:${HAPROXY_VERSION}
 COPY --from=builder /dataplaneapi /dataplaneapi
