@@ -1,6 +1,6 @@
 ARG HAPROXY_VERSION
 
-FROM golang:1.13.8 AS builder
+FROM golang:1.15 AS builder
 ARG HAPROXY_DATA_PLANE_API_VERSION
 RUN git clone https://github.com/haproxytech/dataplaneapi.git $GOPATH/src/github.com/haproxytech/dataplaneapi
 WORKDIR $GOPATH/src/github.com/haproxytech/dataplaneapi
